@@ -308,12 +308,14 @@ public class DropwizardTransformer {
           field = key.substring(lastDotIndex + 1);
         }
       }
+      
+      final String sanitizedField = "time".equals(field) ? "_time" : field;
 
       final DropwizardMeasurement measurement = parser.parse(measurementKey);
       final GroupKey groupKey = GroupKey.create(measurement.name(), measurement.tags());
 
       final Map<String, R> fields = groupedValues.getOrDefault(groupKey, new HashMap<>());
-      fields.put(field, valueExtractor.apply(item));
+      fields.put(sanitizedField, valueExtractor.apply(item));
       groupedValues.put(groupKey, fields);
     });
 
